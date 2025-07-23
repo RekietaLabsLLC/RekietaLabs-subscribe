@@ -3,33 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Subscribe to Rekieta Labs</title>
+  <title>Subscribe - Rekieta Labs</title>
   <style>
     body {
       background-color: #0a0a0a;
-      color: #ffffff;
+      color: white;
       font-family: Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    h1 {
+      color: #1753aa;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    form {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 50px;
+      width: 100%;
+      max-width: 400px;
     }
-    h1 {
-      color: #1753aa;
-    }
-    input, button {
-      padding: 10px;
+
+    input[type="email"] {
+      padding: 12px;
+      width: 100%;
       font-size: 16px;
-      margin: 8px;
+      border-radius: 5px;
+      border: none;
+      margin-bottom: 10px;
     }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #1753aa;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #144a98;
+    }
+
     .msg {
-      margin-top: 10px;
+      margin-top: 15px;
       font-weight: bold;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>Subscribe to Our Newsletter</h1>
+  <h1>Subscribe to Rekieta Labs</h1>
   <form id="subscribe-form">
     <input type="email" id="email" placeholder="Your email address" required />
     <button type="submit">Subscribe</button>
@@ -39,7 +72,9 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabase = createClient('https://rwwrrrutvvsbanbzzwbq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3d3JycnV0dnZzYmFuYnp6d2JxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNjg5OTgsImV4cCI6MjA2NDc0NDk5OH0.ippMWbV1M7xO7jNlkkmF9Hu517frgBpYds1-xuIBCH8');
+    const supabaseUrl = 'https://rwwrrrutvvsbanbzzwbq.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3d3JycnV0dnZzYmFuYnp6d2JxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNjg5OTgsImV4cCI6MjA2NDc0NDk5OH0.ippMWbV1M7xO7jNlkkmF9Hu517frgBpYds1-xuIBCH8';
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     const form = document.getElementById('subscribe-form');
     const msg = document.getElementById('msg');
@@ -52,7 +87,9 @@
         .from('subscribers')
         .upsert([{ email: email.toLowerCase(), subscribed: true }], { onConflict: ['email'] });
 
-      msg.textContent = error ? 'Error subscribing. Try again.' : 'Thank you for subscribing!';
+      msg.textContent = error
+        ? 'Error subscribing. Please try again.'
+        : 'You’ve been subscribed to Rekieta Labs!';
       msg.style.color = error ? 'red' : 'limegreen';
       form.reset();
     };
