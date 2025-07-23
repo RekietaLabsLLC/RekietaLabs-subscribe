@@ -2,72 +2,108 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Subscribe - Rekieta Labs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Subscribe | Rekieta Labs</title>
   <style>
-    body {
-      background-color: #0a0a0a;
-      color: white;
-      font-family: Arial, sans-serif;
-      height: 100vh;
+    :root {
+      --brand-blue: #1753aa;
+      --bg-dark: #0a0a0a;
+      --card-bg: #111;
+      --text: #fff;
+      --success: #39ff88;
+      --error: #ff4e4e;
+    }
+
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text);
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+      animation: fadeIn 0.6s ease;
     }
 
     h1 {
-      color: #1753aa;
-      margin-bottom: 20px;
-      text-align: center;
+      color: var(--brand-blue);
+      margin-bottom: 25px;
+      font-size: 1.8em;
     }
 
     form {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      width: 100%;
-      max-width: 400px;
+      gap: 12px;
     }
 
     input[type="email"] {
-      padding: 12px;
-      width: 100%;
+      padding: 14px;
       font-size: 16px;
-      border-radius: 5px;
       border: none;
-      margin-bottom: 10px;
+      border-radius: 6px;
+      outline: none;
+      width: 100%;
     }
 
     button {
-      padding: 12px 20px;
+      padding: 14px;
       font-size: 16px;
-      background-color: #1753aa;
-      color: white;
+      background-color: var(--brand-blue);
+      color: #fff;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
+      transition: background-color 0.2s ease;
     }
 
     button:hover {
-      background-color: #144a98;
+      background-color: #13448f;
     }
 
     .msg {
       margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
+      font-weight: 500;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 500px) {
+      .card {
+        padding: 30px 20px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Subscribe to Rekieta Labs</h1>
-  <form id="subscribe-form">
-    <input type="email" id="email" placeholder="Your email address" required />
-    <button type="submit">Subscribe</button>
-    <div class="msg" id="msg"></div>
-  </form>
+  <div class="card">
+    <h1>Subscribe to Rekieta Labs</h1>
+    <form id="subscribe-form">
+      <input type="email" id="email" placeholder="Enter your email" required />
+      <button type="submit">Subscribe</button>
+      <div class="msg" id="msg"></div>
+    </form>
+  </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
@@ -81,16 +117,21 @@
 
     form.onsubmit = async (e) => {
       e.preventDefault();
-      const email = document.getElementById('email').value.trim();
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      if (!email) return;
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('subscribers')
-        .upsert([{ email: email.toLowerCase(), subscribed: true }], { onConflict: ['email'] });
+        .upsert([{ email, subscribed: true }], { onConflict: ['email'] });
 
-      msg.textContent = error
-        ? 'Error subscribing. Please try again.'
-        : 'You’ve been subscribed to Rekieta Labs!';
-      msg.style.color = error ? 'red' : 'limegreen';
+      if (error) {
+        msg.textContent = 'Something went wrong. Please try again.';
+        msg.style.color = 'var(--error)';
+      } else {
+        msg.textContent = 'You’ve been subscribed!';
+        msg.style.color = 'var(--success)';
+      }
+
       form.reset();
     };
   </script>
