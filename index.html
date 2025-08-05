@@ -2,138 +2,114 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Subscribe | Rekieta Labs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Subscribe | RekietaLabs</title>
+  <link rel="icon" type="image/jpeg" href="IMG_0926.jpeg" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --brand-blue: #1753aa;
-      --bg-dark: #0a0a0a;
-      --card-bg: #111;
-      --text: #fff;
-      --success: #39ff88;
-      --error: #ff4e4e;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      --brand-color: #1753aa;
+      --bg: #0a0a0a;
+      --fg: #ffffff;
+      --error-color: #ff4d4d;
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text);
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      padding: 20px;
-    }
-
-    .card {
-      background-color: var(--card-bg);
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-      width: 100%;
-      max-width: 450px;
+      min-height: 100vh;
+      flex-direction: column;
       text-align: center;
-      animation: fadeIn 0.6s ease;
     }
 
     h1 {
-      color: var(--brand-blue);
-      margin-bottom: 25px;
-      font-size: 1.8em;
+      color: var(--brand-color);
+      margin-bottom: 2rem;
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 1rem;
+      width: 100%;
+      max-width: 400px;
     }
 
     input[type="email"] {
-      padding: 14px;
-      font-size: 16px;
-      border: none;
+      padding: 1rem;
+      font-size: 1rem;
       border-radius: 6px;
-      outline: none;
-      width: 100%;
+      border: 2px solid var(--brand-color);
+      background-color: #111;
+      color: var(--fg);
     }
 
     button {
-      padding: 14px;
-      font-size: 16px;
-      background-color: var(--brand-blue);
-      color: #fff;
+      background-color: var(--brand-color);
+      color: white;
+      padding: 1rem;
+      font-size: 1rem;
+      font-weight: bold;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #13448f;
+      background-color: #1f5ed1;
     }
 
-    .msg {
-      margin-top: 15px;
+    .error {
+      color: var(--error-color);
+      margin-top: 1rem;
       font-weight: 500;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 500px) {
-      .card {
-        padding: 30px 20px;
-      }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Subscribe to Rekieta Labs</h1>
-    <form id="subscribe-form">
-      <input type="email" id="email" placeholder="Enter your email" required />
-      <button type="submit">Subscribe</button>
-      <div class="msg" id="msg"></div>
-    </form>
-  </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  <h1>Subscribe to RekietaLabs Newsletter</h1>
 
-    const supabaseUrl = 'https://rwwrrrutvvsbanbzzwbq.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3d3JycnV0dnZzYmFuYnp6d2JxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNjg5OTgsImV4cCI6MjA2NDc0NDk5OH0.ippMWbV1M7xO7jNlkkmF9Hu517frgBpYds1-xuIBCH8';
-    const supabase = createClient(supabaseUrl, supabaseKey);
+  <form id="subscribe-form">
+    <input type="email" id="email" placeholder="Enter your email..." required />
+    <button type="submit">Subscribe</button>
+    <div class="error" id="error-message"></div>
+  </form>
+
+  <script>
+    const SUPABASE_URL = "https://rwwrrrutvvsbanbzzwbq.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3d3JycnV0dnZzYmFuYnp6d2JxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNjg5OTgsImV4cCI6MjA2NDc0NDk5OH0.ippMWbV1M7xO7jNlkkmF9Hu517frgBpYds1-xuIBCH8";
+
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const form = document.getElementById('subscribe-form');
-    const msg = document.getElementById('msg');
+    const errorMessage = document.getElementById('error-message');
 
-    form.onsubmit = async (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('email').value.trim().toLowerCase();
-      if (!email) return;
+      const email = document.getElementById('email').value.trim();
 
-      const { error } = await supabase
-        .from('subscribers')
-        .upsert([{ email, subscribed: true }], { onConflict: ['email'] });
-
-      if (error) {
-        msg.textContent = 'Something went wrong. Please try again.';
-        msg.style.color = 'var(--error)';
-      } else {
-        msg.textContent = 'You’ve been subscribed!';
-        msg.style.color = 'var(--success)';
+      if (!email) {
+        errorMessage.textContent = "Please enter an email.";
+        return;
       }
 
-      form.reset();
-    };
+      const { error } = await supabase.from('emails').insert([{ email }]);
+
+      if (error) {
+        errorMessage.textContent = "Error subscribing. Try again.";
+        console.error("Supabase error:", error.message);
+      } else {
+        window.location.href = "https://emails.rekietalabs.com/verified/subscribed";
+      }
+    });
   </script>
 </body>
 </html>
