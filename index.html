@@ -4,134 +4,132 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Subscribe to RekietaLabs Newsletter</title>
-  <link rel="icon" type="image/jpeg" href="IMG_0926.jpeg">
+  <link rel="icon" type="image/jpeg" href="IMG_0926.jpeg" />
   <style>
     :root {
-      --brand-color: #1753aa;
+      --brand-blue: #1753aa;
       --text-color: #ffffff;
-      --bg-color: #121212;
+      --bg-color: #0f0f0f;
     }
 
     body {
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-color);
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
-    }
-
-    .container {
       text-align: center;
-      padding: 30px;
-      border: 2px solid var(--brand-color);
-      border-radius: 15px;
-      background-color: #1e1e1e;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 0 15px rgba(23, 83, 170, 0.5);
     }
 
     h1 {
-      color: var(--brand-color);
       margin-bottom: 20px;
+      color: var(--brand-blue);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 400px;
     }
 
     input[type="email"] {
       padding: 12px;
-      border: 2px solid var(--brand-color);
-      border-radius: 8px;
+      width: 100%;
+      border: 2px solid var(--brand-blue);
       background-color: #1a1a1a;
       color: var(--text-color);
-      width: 100%;
+      border-radius: 5px;
       font-size: 16px;
-      margin-bottom: 15px;
-    }
-
-    input[type="email"]::placeholder {
-      color: #aaa;
+      outline: none;
     }
 
     button {
-      padding: 12px 24px;
-      background-color: var(--brand-color);
-      color: var(--text-color);
+      padding: 12px 20px;
+      background-color: var(--brand-blue);
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      color: var(--text-color);
       font-size: 16px;
-      width: 100%;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
     }
 
     button:hover {
-      background-color: #0e3c88;
+      background-color: #1461cc;
+    }
+
+    .error, .success {
+      margin-top: 15px;
+      font-size: 14px;
     }
 
     .error {
-      color: #ff4f4f;
-      margin-top: 10px;
-      font-size: 14px;
+      color: #ff5555;
+    }
+
+    .success {
+      color: #00cc66;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Subscribe to RekietaLabs Newsletter</h1>
-    <form id="subscribeForm">
-      <input type="email" id="email" name="email" placeholder="Enter your email..." required />
-      <button type="submit">Subscribe</button>
-      <div class="error" id="errorText"></div>
-    </form>
-  </div>
+  <h1>Subscribe to RekietaLabs Newsletter</h1>
+  <form id="subscribe-form">
+    <input type="email" id="email" placeholder="Your email" required />
+    <button type="submit">Subscribe</button>
+    <div id="message" class="error" style="display: none;"></div>
+  </form>
 
   <script>
-    const form = document.getElementById('subscribeForm');
+    const form = document.getElementById('subscribe-form');
     const emailInput = document.getElementById('email');
-    const errorText = document.getElementById('errorText');
-
-    const SUPABASE_URL = "https://rwwrrrutvvsbanbzzwbq.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3d3JycnV0dnZzYmFuYnp6d2JxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNjg5OTgsImV4cCI6MjA2NDc0NDk5OH0.ippMWbV1M7xO7jNlkkmF9Hu517frgBpYds1-xuIBCH8";
+    const messageDiv = document.getElementById('message');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = emailInput.value.trim();
+      messageDiv.style.display = 'none';
 
-      if (!email) {
-        errorText.textContent = "Please enter your email. (RefID: 330014)";
+      if (!email || !email.includes('@')) {
+        messageDiv.textContent = 'Invalid email. Ref ID: 3300014';
+        messageDiv.style.display = 'block';
         return;
       }
 
       try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/subscribers`, {
-          method: 'POST',
+        const res = await fetch("https://rwwrrrutvvsbanbzzwbq.supabase.co/rest/v1/subscribers", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Prefer': 'return=minimal'
+            "Content-Type": "application/json",
+            "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3d3JycnV0dnZzYmFuYnp6d2JxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNjg5OTgsImV4cCI6MjA2NDc0NDk5OH0.ippMWbV1M7xO7jNlkkmF9Hu517frgBpYds1-xuIBCH8",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3d3JycnV0dnZzYmFuYnp6d2JxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNjg5OTgsImV4cCI6MjA2NDc0NDk5OH0.ippMWbV1M7xO7jNlkkmF9Hu517frgBpYds1-xuIBCH8",
+            "Prefer": "return=minimal"
           },
           body: JSON.stringify({ email })
         });
 
-        if (response.ok) {
-          window.location.href = 'https://emails.rekietalabs.com/verified/subscribed';
-        } else if (response.status === 409) {
-          errorText.textContent = "Email already subscribed. (RefID: 331124)";
-        } else if (response.status === 400) {
-          errorText.textContent = "Invalid email format. (RefID: 330424)";
-        } else if (response.status === 403) {
-          errorText.textContent = "Submission not allowed. (RefID: 334214)";
+        if (res.status === 201) {
+          window.location.href = "https://emails.rekietalabs.com/verified/subscribed";
+        } else if (res.status === 409) {
+          messageDiv.textContent = "This email is already subscribed. Ref ID: 3300024";
+          messageDiv.style.display = 'block';
         } else {
-          errorText.textContent = "Unexpected error. (RefID: 339994)";
+          messageDiv.textContent = "Unexpected error occurred. Ref ID: 3300034";
+          messageDiv.style.display = 'block';
         }
-      } catch (error) {
-        errorText.textContent = "Network error. Please try again. (RefID: 332314)";
-        console.error(error);
+      } catch (err) {
+        messageDiv.textContent = "Network error. Ref ID: 3300044";
+        messageDiv.style.display = 'block';
       }
     });
   </script>
 </body>
-</html>
+</html
